@@ -1,7 +1,8 @@
 const express = require('express')
 require('./db/mongoose')
 const userRouter = require('./routers/user')
-const taskRouter = require('./routers/task')
+const taskRouter = require('./routers/task')    
+const cors = require('cors')
 
 const app = express()
 const port = process.env.PORT
@@ -29,6 +30,8 @@ app.post('/upload', upload.single('upload'), (req,res) => {
 app.use(express.json())
 app.use(userRouter)
 app.use(taskRouter)
+app.use(cors())
+
 
 
 app.listen(port, () => {

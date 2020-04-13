@@ -7,6 +7,11 @@ const { sendWelcomeEmail, sendCancelEmail } = require('../emails/account')
 
 const router = new express.Router()
 
+//
+router.get('/' , async (req, res) => {
+    res.status(201).send('It is working')
+})
+
 
 //create user
 router.post('/users' , async (req, res) => {
