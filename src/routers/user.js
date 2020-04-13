@@ -4,8 +4,11 @@ const sharp = require('sharp')
 const User = require('../models/user')
 const auth = require('../middleware/auth')
 const { sendWelcomeEmail, sendCancelEmail } = require('../emails/account')
+const cors = require('cors')
+
 
 const router = new express.Router()
+router.all('*', cors())
 
 //
 router.get('/' , async (req, res) => {
