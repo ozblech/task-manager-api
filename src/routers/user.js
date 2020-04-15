@@ -31,7 +31,7 @@ router.post('/users' , async (req, res) => {
 })
 
 //login
-router.post('/users/login', async (req, res) => {
+router.post('/users/login   ', async (req, res) => {
     try {
         const user = await User.findByCredentials(req.body.email, req.body.password)
         const token = await user.generateAuthToken()
@@ -120,6 +120,8 @@ const upload = multer({
     }
 })
 
+
+//upload avatar
 router.post('/users/me/avatar', auth, upload.single('avatar'), async (req,res) => {
     const buffer = await sharp(req.file.buffer).png().resize({ width: 250, height: 250 }).toBuffer()
     req.user.avatar = buffer
@@ -135,6 +137,7 @@ router.delete('/users/me/avatar', auth, async(req, res) => {
     res.send()
 })
 
+//get avatar image on browser
 router.get('/users/:id/avatar', async(req,res) => {
     try {
         const user = await User.findById(req.params.id)
