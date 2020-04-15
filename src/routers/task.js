@@ -1,11 +1,11 @@
 const express = require('express')
 const Task = require('../models/task')
 const auth = require('../middleware/auth')
-// const cors = require('cors')
+const cors = require('cors')
 
 
 const router = new express.Router()
-// router.all('*', cors())
+router.all('*', cors())
 
 
 
