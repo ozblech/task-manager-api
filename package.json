@@ -1,29 +1,28 @@
 {
   "name": "task-manager",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "1.0.1",
+  "description": "A simple task manager API built with Node.js and Express.",
+  "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "env-cmd ./config/dev.env nodemon src/index.js"
+    "dev": "env-cmd -f ./config/dev.env nodemon src/index.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Your Name",
+  "license": "MIT",
   "dependencies": {
-    "@sendgrid/mail": "^6.3.1",
+    "@sendgrid/mail": "^8.1.5",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
-    "express": "^4.16.4",
-    "jsonwebtoken": "^8.4.0",
-    "mongodb": "^3.5.5",
-    "mongoose": "^5.9.7",
-    "multer": "^1.4.1",
-    "sharp": "^0.23.3",
-    "validator": "^10.9.0"
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "mongodb": "^6.5.0",
+    "mongoose": "^8.0.0",
+    "multer": "^1.4.5-lts.1",
+    "sharp": "^0.33.0",
+    "validator": "^13.11.0"
   },
   "devDependencies": {
-    "env-cmd": "^8.0.2",
-    "nodemon": "^1.18.9"
+    "env-cmd": "^10.1.0",
+    "nodemon": "^3.0.2"
   }
 }
