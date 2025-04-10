@@ -5,7 +5,7 @@ const taskRouter = require('./routers/task')
 const cors = require('cors')
 
 const app = express()
-const port = process.env.PORT
+const port = process.env.PORT || 3000
 
 const multer = require('multer')
 const upload = multer({

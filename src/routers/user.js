@@ -26,7 +26,8 @@ router.post('/users' , async (req, res) => {
         res.status(201).json({ user, token })
     }
     catch (e) {
-        res.status(400).json(e)
+        console.error('User creation failed:', e);
+        res.status(400).json(e);
     }
 })
 
