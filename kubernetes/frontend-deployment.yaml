@@ -1,0 +1,32 @@
+# frontend-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: task-app-front
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: task-app-front
+  template:
+    metadata:
+      labels:
+        app: task-app-front
+    spec:
+      containers:
+        - name: frontend
+          image: ozblech/task-app-front:latest
+          ports:
+            - containerPort: 80
+---
+# frontend-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: task-app-front
+spec:
+  selector:
+    app: task-app-front
+  ports:
+    - port: 80
+      targetPort: 80

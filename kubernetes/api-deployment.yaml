@@ -1,0 +1,39 @@
+# api-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: task-manager-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: task-manager-api
+  template:
+    metadata:
+      labels:
+        app: task-manager-api
+    spec:
+      containers:
+        - name: api
+          image: ozblech/task-manager-api:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: MONGODB_URL
+              value: mongodb://mongo:27017/task-manager-api
+            - name: JWT_SECRET
+              value: thisismysecret
+            - name: PORT
+              value: "3000"
+---
+# api-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: task-manager-api
+spec:
+  selector:
+    app: task-manager-api
+  ports:
+    - port: 3000
+      targetPort: 3000

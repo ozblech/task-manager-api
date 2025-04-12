@@ -1,8 +1,12 @@
+require('dotenv').config();
+console.log('MONGODB_URL:', process.env.MONGODB_URL);
 const express = require('express')
 require('./db/mongoose')
 const userRouter = require('./routers/user')
 const taskRouter = require('./routers/task')    
 const cors = require('cors')
+
+
 
 const app = express()
 const port = process.env.PORT || 3000
