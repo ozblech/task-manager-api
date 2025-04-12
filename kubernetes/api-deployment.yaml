@@ -25,6 +25,16 @@ spec:
               value: thisismysecret
             - name: PORT
               value: "3000"
+            - name: SENDGRID_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: sendgrid-secrets
+                  key: SENDGRID_API_KEY
+            - name: EMAIL_ACCOUNT
+              valueFrom:
+                secretKeyRef:
+                  name: sendgrid-secrets
+                  key: EMAIL_ACCOUNT
 ---
 # api-service.yaml
 apiVersion: v1
