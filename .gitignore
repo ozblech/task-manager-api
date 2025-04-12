@@ -3,5 +3,5 @@ config
 
 # Ignore K8s secrets
 secret.yaml
-*.*secret.yaml
+*/*-secret.yaml
 *.env
