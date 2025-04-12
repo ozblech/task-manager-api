@@ -14,10 +14,12 @@ services:
     container_name: task-manager-api
     ports:
       - "3000:3000"
-    environment:
-      - MONGODB_URL=mongodb://mongo:27017/task-manager-api
-      - PORT=3000
-      - JWT_SECRET=your_jwt_secret
+    # environment:
+    #   - MONGODB_URL=mongodb://mongo:27017/task-manager-api
+    #   - PORT=3000
+    #   - JWT_SECRET=your_jwt_secret
+    env_file:
+      - .env
     depends_on:
       - mongo
   
