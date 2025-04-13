@@ -22,6 +22,7 @@ spec:
 # frontend-service.yaml
 apiVersion: v1
 kind: Service
+apiVersion: v1
 metadata:
   name: task-app-front
 spec:
@@ -30,3 +31,4 @@ spec:
   ports:
     - port: 80
       targetPort: 80
+      protocol: TCP

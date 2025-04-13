@@ -1,0 +1,13 @@
+In order to make it work in EKS
+Install nginx controller
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo update
+helm install ingress-nginx ingress-nginx/ingress-nginx \
+  --namespace ingress-nginx \
+  --create-namespace
+Update DNS or /etc/hosts
+3.122.45.67 task.local
+Find the ip addres of the ingress controller:
+nslookup <a5d00a04e268e438287d9a9aa4381824-1610367987.us-west-2.elb.amazonaws.com> #CHANGE TO REAL ADDRESS
+In front-app:
+const API_BASE_URL = '/api';
