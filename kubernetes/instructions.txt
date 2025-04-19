@@ -22,3 +22,16 @@ then go to http://task.local:PORT_NUMBER
 
 For running using helm chart:
 helm install my-app ./my-app -f ./my-app/values.yaml -f ./my-app/values-secret.yaml
+values-secret should include:
+backend:
+  env:
+    MONGODB_URL: "mongodb://user:password@my-app-mongodb:27017/admin"
+    SENDGRID_API_KEY:
+    EMAIL_ACCOUNT:
+    JWT_SECRET:
+mongodb:
+  auth:
+    rootPassword: 
+    username: 
+    password: 
+    database: 
