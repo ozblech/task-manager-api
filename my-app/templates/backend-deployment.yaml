@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: task-manager-api
+spec:
+  replicas: {{ .Values.backend.replicaCount }}
+  selector:
+    matchLabels:
+      app: task-manager-api
+  template:
+    metadata:
+      labels:
+        app: task-manager-api
+    spec:
+      containers:
+        - name: task-manager-api
+          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+          imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
+          ports:
+            - containerPort: 3000
+          env:
+            - name: MONGODB_URL
+              value: "{{ .Values.backend.env.MONGODB_URL }}"
+            - name: SENDGRID_API_KEY
+              value: "{{ .Values.backend.env.SENDGRID_API_KEY }}"
+            - name: EMAIL_ACCOUNT
+              value: "{{ .Values.backend.env.EMAIL_ACCOUNT }}"
+            - name: JWT_SECRET
+              value: "{{ .Values.backend.env.JWT_SECRET }}"

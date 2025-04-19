@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: task-manager-api
+spec:
+  selector:
+    app: task-manager-api
+  ports:
+    - port: {{ .Values.backend.service.port }}
+      targetPort: 3000

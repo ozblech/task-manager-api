@@ -1,0 +1,33 @@
+backend:
+  replicaCount: 1
+  image:
+    repository: ozblech/task-manager-api
+    tag: latest
+    pullPolicy: Always
+  service:
+    port: 3000
+
+frontend:
+  replicaCount: 1
+  image:
+    repository: ozblech/task-app-front
+    tag: latest
+    pullPolicy: Always
+  service:
+    port: 80
+
+ingress:
+  enabled: true
+  host: task.local
+
+service:
+  port: 80
+
+mongodb:
+  username: "root"
+  password: "rootpassword"
+  database: "taskmanager"
+
+  
+
+

@@ -5,3 +5,9 @@ config
 secret.yaml
 */*-secret.yaml
 *.env
+
+charts/
+*.tgz
+*.log
+*.tmp
+.DS_Store
