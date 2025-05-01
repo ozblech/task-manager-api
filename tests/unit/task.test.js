@@ -1,9 +1,14 @@
+process.env.JWT_SECRET = 'thisismysecret';
+
 const request = require('supertest');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const app = require('../../src/index');
 const Task = require('../../src/models/task');
 const User = require('../../src/models/user');
+
+
+
 
 const testUserId = new mongoose.Types.ObjectId();
 const testUser = {
