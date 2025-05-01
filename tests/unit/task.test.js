@@ -70,7 +70,7 @@ test('Should create task for user', async () => {
 test('Should fetch user tasks', async () => {
   const response = await request(app)
     .get('/tasks')
-    .set('Authorization', `Bearer ${testUser.tokens[0].token}`)
+    .set('Authorization', `Bearer ${authToken}`)
     .send()
     .expect(200);
 
@@ -92,7 +92,7 @@ test('Should not delete task of other users', async () => {
 
   await request(app)
     .delete(`/tasks/${testTask._id}`)
-    .set('Authorization', `Bearer ${otherUser.tokens[0].token}`)
+    .set('Authorization', `Bearer ${authToken}`)
     .send()
     .expect(401);
 
