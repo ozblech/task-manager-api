@@ -1,7 +1,7 @@
 require('dotenv').config();
 console.log('MONGODB_URL:', process.env.MONGODB_URL);
 const express = require('express')
-require('./db/mongoose')
+const { connectToDB } = require('./db/mongoose');
 const userRouter = require('./routers/user')
 const taskRouter = require('./routers/task')    
 const cors = require('cors')
@@ -36,10 +36,19 @@ app.use(userRouter)
 app.use(taskRouter)
 
 
+let server;
 
-app.listen(port, () => {
-    console.log('Server is up on port ' + port)
-})
+if (require.main === module) {
+  connectToDB().then(() => {
+    const port = process.env.PORT || 3000;
+    server = app.listen(port, () => {
+      console.log('Server is up on port ' + port);
+    });
+  });
+}
+
+
+module.exports = app;
 
 
 

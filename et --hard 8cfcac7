@@ -1,0 +1,13 @@
+[33m7cc2373[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{0}: reset: moving to HEAD~1
+[33m8cfcac7[m HEAD@{1}: commit: add unit tests
+[33m7cc2373[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{2}: commit: add helm chart files
+[33mc513289[m HEAD@{3}: commit: add helm chart files
+[33m3e61265[m HEAD@{4}: commit: make ingress for aws
+[33m50e8bd0[m HEAD@{5}: commit: edit docker compose file
+[33m711d273[m HEAD@{6}: commit: fix gitignore file
+[33m3d9d55b[m HEAD@{7}: commit: Added kubernetes secret
+[33mab6eaf2[m HEAD@{8}: commit: adding api key for mail
+[33m14efd0b[m HEAD@{9}: pull --rebase: Fast-forward
+[33mc446431[m HEAD@{10}: commit: add dockerfile and docker-compose file
+[33md14243f[m HEAD@{11}: commit: fix code
+[33m1ea9570[m HEAD@{12}: clone: from https://github.com/ozblech/task-manager-api.git

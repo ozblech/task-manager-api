@@ -11,3 +11,8 @@ charts/
 *.log
 *.tmp
 .DS_Store
+
+# Ignore coverage reports
+coverage/
+# Ignore IDE files
+.idea/
