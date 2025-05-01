@@ -16,6 +16,16 @@ const testUser = {
   }]
 };
 
+const otherUser = {
+  _id: testUserId,
+  name: 'Other',
+  email: 'other@example.com',
+  password: 'pass123',
+  tokens: [{
+    token: jwt.sign({ _id: testUserId }, process.env.JWT_SECRET || 'thisismysecret')
+  }]
+};
+
 const testTask = {
   _id: new mongoose.Types.ObjectId(),
   description: 'Test task',
@@ -41,12 +51,6 @@ beforeEach(async () => {
   await new Task({ ...testTask, owner: user._id }).save();
 });
 
-// beforeEach(async () => {
-//   await User.deleteMany();
-//   await Task.deleteMany();
-//   await new User(testUser).save();
-//   await new Task(testTask).save();
-// });
 
 afterAll(async () => {
   await mongoose.disconnect();
@@ -79,20 +83,22 @@ test('Should fetch user tasks', async () => {
 });
 
 test('Should not delete task of other users', async () => {
-  const otherUser = new User({
-    name: 'Other',
-    email: 'other@example.com',
-    password: 'pass123',
-    tokens: [{
-      token: jwt.sign({ _id: new mongoose.Types.ObjectId() }, process.env.JWT_SECRET || 'thisismysecret')
-    }]
-  });
+  // const otherUser = new User({
+  //   name: 'Other',
+  //   email: 'other@example.com',
+  //   password: 'pass123',
+  //   tokens: [{
+  //     token: jwt.sign({ _id: new mongoose.Types.ObjectId() }, process.env.JWT_SECRET || 'thisismysecret')
+  //   }]
+  // });
 
+  const otherUser = new User(otherUser);
   await otherUser.save();
+  otherUserAuthToken = await otherUser.generateAuthToken();
 
   await request(app)
     .delete(`/tasks/${testTask._id}`)
-    .set('Authorization', `Bearer ${authToken}`)
+    .set('Authorization', `Bearer ${otherUserAuthToken}`)
     .send()
     .expect(401);
 
