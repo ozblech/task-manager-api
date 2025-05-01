@@ -28,12 +28,24 @@ beforeAll(async () => {
   await mongoose.connect(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true });
 });
 
+let authToken;
+
 beforeEach(async () => {
   await User.deleteMany();
   await Task.deleteMany();
-  await new User(testUser).save();
-  await new Task(testTask).save();
+
+  await testUser.save();
+  authToken = await testUser.generateAuthToken();
+
+  await new Task({ ...testTask, owner: testUser._id }).save();
 });
+
+// beforeEach(async () => {
+//   await User.deleteMany();
+//   await Task.deleteMany();
+//   await new User(testUser).save();
+//   await new Task(testTask).save();
+// });
 
 afterAll(async () => {
   await mongoose.disconnect();
@@ -42,7 +54,7 @@ afterAll(async () => {
 test('Should create task for user', async () => {
   const response = await request(app)
     .post('/tasks')
-    .set('Authorization', `Bearer ${testUser.tokens[0].token}`)
+    .set('Authorization', `Bearer ${authToken}`)
     .send({
       description: 'New test task'
     })
