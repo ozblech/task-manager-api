@@ -90,7 +90,7 @@ test('Should not delete task of other users', async () => {
     .delete(`/tasks/${testTask._id}`)
     .set('Authorization', `Bearer ${otherUserAuthToken}`)
     .send()
-    .expect(401);
+    .expect(404);
 
   const task = await Task.findById(testTask._id);
   expect(task).not.toBeNull();
