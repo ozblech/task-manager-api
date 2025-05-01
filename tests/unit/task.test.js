@@ -16,13 +16,14 @@ const testUser = {
   }]
 };
 
+const otherUserId = new mongoose.Types.ObjectId();
 const otherUser = {
   _id: testUserId,
   name: 'Other',
   email: 'other@example.com',
   password: 'pass123',
   tokens: [{
-    token: jwt.sign({ _id: testUserId }, process.env.JWT_SECRET || 'thisismysecret')
+    token: jwt.sign({ _id: otherUserId }, process.env.JWT_SECRET || 'thisismysecret')
   }]
 };
 
@@ -92,9 +93,9 @@ test('Should not delete task of other users', async () => {
   //   }]
   // });
 
-  const otherUser = new User(otherUser);
-  await otherUser.save();
-  otherUserAuthToken = await otherUser.generateAuthToken();
+  const otherUserTest = new User(otherUser);
+  await otherUserTest.save();
+  otherUserAuthToken = await otherUserTest.generateAuthToken();
 
   await request(app)
     .delete(`/tasks/${testTask._id}`)
