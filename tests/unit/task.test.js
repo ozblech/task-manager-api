@@ -11,9 +11,6 @@ const testUser = {
   name: 'Task Tester',
   email: 'tasktester@example.com',
   password: 'MyPass123',
-  tokens: [{
-    token: jwt.sign({ _id: testUserId }, process.env.JWT_SECRET || 'thisismysecret')
-  }]
 };
 
 const otherUserId = new mongoose.Types.ObjectId();
@@ -22,9 +19,6 @@ const otherUser = {
   name: 'Other',
   email: 'other@example.com',
   password: 'pass123',
-  tokens: [{
-    token: jwt.sign({ _id: otherUserId }, process.env.JWT_SECRET || 'thisismysecret')
-  }]
 };
 
 const testTask = {
