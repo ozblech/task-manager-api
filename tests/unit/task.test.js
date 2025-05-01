@@ -34,10 +34,11 @@ beforeEach(async () => {
   await User.deleteMany();
   await Task.deleteMany();
 
-  await testUser.save();
-  authToken = await testUser.generateAuthToken();
+  const user = new User(testUser);
+  await user.save();
+  authToken = await user.generateAuthToken();
 
-  await new Task({ ...testTask, owner: testUser._id }).save();
+  await new Task({ ...testTask, owner: user._id }).save();
 });
 
 // beforeEach(async () => {
