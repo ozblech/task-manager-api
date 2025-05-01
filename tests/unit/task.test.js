@@ -15,7 +15,7 @@ const testUser = {
 
 const otherUserId = new mongoose.Types.ObjectId();
 const otherUser = {
-  _id: testUserId,
+  _id: otherUserId,
   name: 'Other',
   email: 'other@example.com',
   password: 'pass123',
