@@ -1,14 +1,11 @@
+// Set this BEFORE importing any code that uses JWT
 process.env.JWT_SECRET = 'thisismysecret';
 
 const request = require('supertest');
 const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
 const app = require('../../src/index');
 const Task = require('../../src/models/task');
 const User = require('../../src/models/user');
-
-
-
 
 const testUserId = new mongoose.Types.ObjectId();
 const testUser = {
@@ -33,24 +30,31 @@ const testTask = {
   owner: testUserId
 };
 
+let authToken;
+let otherUserAuthToken;
+
 beforeAll(async () => {
   const dbUrl = process.env.MONGODB_URL || 'mongodb://localhost:27017/test';
-  await mongoose.connect(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true });
+  await mongoose.connect(dbUrl);
 });
-
-let authToken;
 
 beforeEach(async () => {
   await User.deleteMany();
   await Task.deleteMany();
 
+  // Create and save main user
   const user = new User(testUser);
   await user.save();
   authToken = await user.generateAuthToken();
 
+  // Create and save other user
+  const other = new User(otherUser);
+  await other.save();
+  otherUserAuthToken = await other.generateAuthToken();
+
+  // Create test task owned by main user
   await new Task({ ...testTask, owner: user._id }).save();
 });
-
 
 afterAll(async () => {
   await mongoose.disconnect();
@@ -65,7 +69,6 @@ test('Should create task for user', async () => {
     })
     .expect(201);
 
-  // Check it was saved to DB
   const task = await Task.findById(response.body._id);
   expect(task).not.toBeNull();
   expect(task.completed).toBe(false);
@@ -83,19 +86,6 @@ test('Should fetch user tasks', async () => {
 });
 
 test('Should not delete task of other users', async () => {
-  // const otherUser = new User({
-  //   name: 'Other',
-  //   email: 'other@example.com',
-  //   password: 'pass123',
-  //   tokens: [{
-  //     token: jwt.sign({ _id: new mongoose.Types.ObjectId() }, process.env.JWT_SECRET || 'thisismysecret')
-  //   }]
-  // });
-
-  const otherUserTest = new User(otherUser);
-  await otherUserTest.save();
-  otherUserAuthToken = await otherUserTest.generateAuthToken();
-
   await request(app)
     .delete(`/tasks/${testTask._id}`)
     .set('Authorization', `Bearer ${otherUserAuthToken}`)
