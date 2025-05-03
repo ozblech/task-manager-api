@@ -61,6 +61,9 @@ afterAll(async () => {
 });
 
 test('Should create task for user', async () => {
+  const users = await User.find({});
+  console.log(JSON.stringify(users, null, 2));
+  console.log('Auth token in test:', authToken);
   const response = await request(app)
     .post('/tasks')
     .set('Authorization', `Bearer ${authToken}`)
