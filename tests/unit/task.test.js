@@ -69,7 +69,7 @@ test('Should create task for user', async () => {
   console.log('User token:', user.tokens[0].token);
   const response = await request(app)
     .post('/tasks')
-    .set('Authorization', `Bearer ${user.tokens[0].token}`)
+    .set('Authorization', `Bearer ${token}`)
     .send({
       description: 'New test task'
     })
