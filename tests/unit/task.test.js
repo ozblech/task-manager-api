@@ -30,6 +30,10 @@ const testTask = {
   owner: testUserId
 };
 
+let user;
+let other_user;
+let token;
+let other_token;
 
 beforeAll(async () => {
   const dbUrl = process.env.MONGODB_URL || 'mongodb://localhost:27017/test';
@@ -41,14 +45,12 @@ beforeEach(async () => {
   await Task.deleteMany();
 
   // Create and save main user with token
-  const user = new User(testUser);
+  user = await new User(testUser).save();
+  token = await user.generateAuthToken();
 
   // Create and save other user with token
-  const other = new User(otherUser);
-
-  const users = await User.find({});
-  console.log('Users in DB:');
-  console.log('All users in DB:', users); // Should log 2
+  other_user = await new User(otherUser).save();
+  other_token = await other_user.generateAuthToken();
 
   // Create test task owned by main user
   await new Task({ ...testTask, owner: user._id }).save();
@@ -62,10 +64,11 @@ test('Should create task for user', async () => {
   const users = await User.find({});
   console.log('Users in DB:');
   console.log(JSON.stringify(users, null, 2));
-  console.log('Auth token in test:', authToken);
+  console.log('User should be created');
+  console.log('User:', user);
   const response = await request(app)
     .post('/tasks')
-    .set('Authorization', `Bearer ${testUser.tokens[0].token}`)
+    .set('Authorization', `Bearer ${token}`)
     .send({
       description: 'New test task'
     })
@@ -79,7 +82,7 @@ test('Should create task for user', async () => {
 test('Should fetch user tasks', async () => {
   const response = await request(app)
     .get('/tasks')
-    .set('Authorization', `Bearer ${testUser.tokens[0].token}`)
+    .set('Authorization', `Bearer ${token}`)
     .send()
     .expect(200);
 
@@ -90,7 +93,7 @@ test('Should fetch user tasks', async () => {
 test('Should not delete task of other users', async () => {
   await request(app)
     .delete(`/tasks/${testTask._id}`)
-    .set('Authorization', `Bearer ${otherUser.tokens[0].token}`)
+    .set('Authorization', `Bearer ${other_token}`)
     .send()
     .expect(404);
 
