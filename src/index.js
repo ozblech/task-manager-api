@@ -32,6 +32,10 @@ app.post('/upload', upload.single('upload'), (req,res) => {
 
 app.use(cors())
 app.use(express.json())
+// ✅ Add health check endpoint here
+app.get('/health', (req, res) => {
+    res.send('OK');
+  });
 app.use(userRouter)
 app.use(taskRouter)
 

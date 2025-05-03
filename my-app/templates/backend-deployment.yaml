@@ -27,3 +27,18 @@ spec:
               value: "{{ .Values.backend.env.EMAIL_ACCOUNT }}"
             - name: JWT_SECRET
               value: "{{ .Values.backend.env.JWT_SECRET }}"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            failureThreshold: 3
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            failureThreshold: 5
