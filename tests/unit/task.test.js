@@ -45,12 +45,10 @@ beforeEach(async () => {
   // Create and save main user with token
   const user = new User(testUser);
   authToken = await user.generateAuthToken();
-  await user.save();  // Save again so token is persisted
 
   // Create and save other user with token
   const other = new User(otherUser);
   otherUserAuthToken = await other.generateAuthToken();
-  await other.save();
 
   // Create test task owned by main user
   await new Task({ ...testTask, owner: user._id }).save();
