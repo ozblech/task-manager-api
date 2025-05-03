@@ -101,3 +101,4 @@ test('Should not delete task of other users', async () => {
   const task = await Task.findById(testTask._id);
   expect(task).not.toBeNull();
 });
+
