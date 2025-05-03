@@ -30,8 +30,6 @@ const testTask = {
   owner: testUserId
 };
 
-let authToken;
-let otherUserAuthToken;
 
 beforeAll(async () => {
   const dbUrl = process.env.MONGODB_URL || 'mongodb://localhost:27017/test';
@@ -44,11 +42,9 @@ beforeEach(async () => {
 
   // Create and save main user with token
   const user = new User(testUser);
-  authToken = await user.generateAuthToken();
 
   // Create and save other user with token
   const other = new User(otherUser);
-  otherUserAuthToken = await other.generateAuthToken();
 
   const users = await User.find({});
   console.log('Users in DB:');
@@ -69,7 +65,7 @@ test('Should create task for user', async () => {
   console.log('Auth token in test:', authToken);
   const response = await request(app)
     .post('/tasks')
-    .set('Authorization', `Bearer ${authToken}`)
+    .set('Authorization', `Bearer ${testUser.tokens[0].token}`)
     .send({
       description: 'New test task'
     })
@@ -83,7 +79,7 @@ test('Should create task for user', async () => {
 test('Should fetch user tasks', async () => {
   const response = await request(app)
     .get('/tasks')
-    .set('Authorization', `Bearer ${authToken}`)
+    .set('Authorization', `Bearer ${testUser.tokens[0].token}`)
     .send()
     .expect(200);
 
@@ -94,7 +90,7 @@ test('Should fetch user tasks', async () => {
 test('Should not delete task of other users', async () => {
   await request(app)
     .delete(`/tasks/${testTask._id}`)
-    .set('Authorization', `Bearer ${otherUserAuthToken}`)
+    .set('Authorization', `Bearer ${otherUser.tokens[0].token}`)
     .send()
     .expect(404);
 
