@@ -66,6 +66,7 @@ test('Should create task for user', async () => {
   console.log(JSON.stringify(users, null, 2));
   console.log('User should be created');
   console.log('User:', user);
+  console.log('User token:', user.tokens[0].token);
   const response = await request(app)
     .post('/tasks')
     .set('Authorization', `Bearer ${user.tokens[0].token}`)
