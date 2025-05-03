@@ -20,7 +20,7 @@ const otherUser = {
   _id: otherUserId,
   name: 'Other',
   email: 'other@example.com',
-  password: 'pass123',
+  password: 'pass123123',
 };
 
 const testTask = {
@@ -50,6 +50,10 @@ beforeEach(async () => {
   const other = new User(otherUser);
   otherUserAuthToken = await other.generateAuthToken();
 
+  const users = await User.find({});
+  console.log('Users in DB:');
+  console.log('All users in DB:', users); // Should log 2
+
   // Create test task owned by main user
   await new Task({ ...testTask, owner: user._id }).save();
 });
@@ -60,6 +64,7 @@ afterAll(async () => {
 
 test('Should create task for user', async () => {
   const users = await User.find({});
+  console.log('Users in DB:');
   console.log(JSON.stringify(users, null, 2));
   console.log('Auth token in test:', authToken);
   const response = await request(app)
