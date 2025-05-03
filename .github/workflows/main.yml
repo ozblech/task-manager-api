@@ -18,7 +18,7 @@ jobs:
       MONGODB_URL: mongodb://localhost:27017/task-manager-api
       JWT_SECRET: thisismysecret
       SENDGRID_API_KEY: SG.TEST
-      SENDGRID_EMAIL: test@test.com
+      EMAIL_ACCOUNT: test@test.com
 
     steps:
       - name: Checkout code

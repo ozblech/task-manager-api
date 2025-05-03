@@ -47,10 +47,12 @@ beforeEach(async () => {
   // Create and save main user with token
   user = await new User(testUser).save();
   token = await user.generateAuthToken();
+  await user.save();
 
   // Create and save other user with token
   other_user = await new User(otherUser).save();
   other_token = await other_user.generateAuthToken();
+  await other_user.save();
 
   // Create test task owned by main user
   await new Task({ ...testTask, owner: user._id }).save();
