@@ -1,6 +1,6 @@
 const request = require('supertest');
-const app = require('../src/index');
-const User = require('../src/models/user');
+const app = require('../../src/index');
+const User = require('../../src/models/user');
 const { testUser, setupDatabase } = require('./setup');
 
 beforeEach(async () => {
