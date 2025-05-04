@@ -28,7 +28,7 @@ test('Should signup a new user', async () => {
     .post('/users')
     .send({
       name: 'Test User',
-      email: 'test@example.com',
+      email: 'test1@example.com',
       password: 'MyPass777!'
     })
     .expect(201)
