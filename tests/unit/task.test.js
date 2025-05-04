@@ -87,6 +87,21 @@ test('Should create task for user', async () => {
   expect(task.completed).toBe(false);
 });
 
+test('Auth test', async () => {
+  const freshUser = await User.findById(user._id);
+  console.log('Stored token:', freshUser.tokens[0].token);
+
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  console.log('Decoded:', decoded);
+
+  expect(decoded._id).toBe(user._id.toString());
+
+  const response = await request(app)
+    .get('/tasks') // or any protected route
+    .set('Authorization', `Bearer ${token}`)
+    .expect(200);
+});
+
 test('Should fetch user tasks', async () => {
   const response = await request(app)
     .get('/tasks')
