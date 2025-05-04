@@ -45,25 +45,14 @@ beforeEach(async () => {
   await User.deleteMany();
   await Task.deleteMany();
 
-  // Create and save main user with token
   user = new User(testUser);
-  token = await user.generateAuthToken();
-  await user.save();
+  token = await user.generateAuthToken(); // This should internally save the user
+  user = await User.findById(user._id); // Re-fetch user from DB to confirm it's there
 
-  // Ensure user is saved before continuing
-  let attempts = 0;
-  while (attempts < 5) {
-    const fresh = await User.findById(user._id);
-    if (fresh && fresh.tokens.length > 0) {
-      console.log('User saved successfully:', fresh);
-      break;
-    }
-    await new Promise((res) => setTimeout(res, 100)); // wait 100ms
-    attempts++;
-    console.log('Waiting for user to be saved...');
+  if (!user || user.tokens.length === 0) {
+    throw new Error('User not saved properly or token missing');
   }
 
-  // Repeat for other_user
   other_user = new User(otherUser);
   other_token = await other_user.generateAuthToken();
   await other_user.save();
@@ -98,6 +87,7 @@ afterAll(async () => {
 
 test('Auth test', async () => {
   const freshUser = await User.findById(user._id);
+  console.log('Fetched user:', freshUser);
   console.log('Stored token:', freshUser.tokens[0].token);
 
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
