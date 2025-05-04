@@ -44,17 +44,16 @@ beforeEach(async () => {
   await User.deleteMany();
   await Task.deleteMany();
 
-  // Create and save main user
   user = new User(testUser);
   token = await user.generateAuthToken();
-  await user.save(); // ✅ Ensure user with token is saved in DB
 
-  // Create and save other user
   other_user = new User(otherUser);
   other_token = await other_user.generateAuthToken();
-  await other_user.save(); // ✅ Same here
 
   await new Task({ ...testTask, owner: user._id }).save();
+
+  // ✅ Workaround for race condition in test environments
+  await new Promise((resolve) => setTimeout(resolve, 50));
 });
 
 afterAll(async () => {
