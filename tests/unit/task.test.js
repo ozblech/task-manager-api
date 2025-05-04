@@ -1,6 +1,7 @@
 // Set this BEFORE importing any code that uses JWT
 process.env.JWT_SECRET = 'thisismysecret';
 
+const jwt = require('jsonwebtoken')
 const request = require('supertest');
 const mongoose = require('mongoose');
 const app = require('../../src/index');
