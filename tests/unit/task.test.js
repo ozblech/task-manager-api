@@ -45,22 +45,30 @@ beforeEach(async () => {
   await User.deleteMany();
   await Task.deleteMany();
 
+  // Create and save main user with token
   user = new User(testUser);
   token = await user.generateAuthToken();
+  await user.save();
 
+  // Ensure user is saved before continuing
+  let attempts = 0;
+  while (attempts < 5) {
+    const fresh = await User.findById(user._id);
+    if (fresh && fresh.tokens.length > 0) {
+      console.log('User saved successfully:', fresh);
+      break;
+    }
+    await new Promise((res) => setTimeout(res, 100)); // wait 100ms
+    attempts++;
+    console.log('Waiting for user to be saved...');
+  }
+
+  // Repeat for other_user
   other_user = new User(otherUser);
   other_token = await other_user.generateAuthToken();
+  await other_user.save();
 
   await new Task({ ...testTask, owner: user._id }).save();
-
-  // ✅ Workaround for race condition in test environments
-  // After user.save()
-  let retries = 5;
-  while (retries--) {
-    const fresh = await User.findOne({ _id: user._id, 'tokens.token': token });
-    if (fresh) break;
-    await new Promise((res) => setTimeout(res, 20));
-}
 });
 
 afterAll(async () => {
