@@ -53,7 +53,13 @@ beforeEach(async () => {
   await new Task({ ...testTask, owner: user._id }).save();
 
   // ✅ Workaround for race condition in test environments
-  await new Promise((resolve) => setTimeout(resolve, 50));
+  // After user.save()
+  let retries = 5;
+  while (retries--) {
+    const fresh = await User.findOne({ _id: user._id, 'tokens.token': token });
+    if (fresh) break;
+    await new Promise((res) => setTimeout(res, 20));
+}
 });
 
 afterAll(async () => {
