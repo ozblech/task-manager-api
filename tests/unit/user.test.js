@@ -1,51 +1,18 @@
-const request = require('supertest')
-const app = require('../../src/index');
-const User = require('../../src/models/user')
-const { connectToDB, disconnectFromDB } = require('../../src/db/mongoose');
+const request = require('supertest');
+const app = require('../src/index');
+const User = require('../src/models/user');
+const { testUser, setupDatabase } = require('./setup');
 
-// mock SendGrid functions
-jest.mock('../../src/emails/account', () => ({
-  sendWelcomeEmail: jest.fn(),
-  sendCancelEmail: jest.fn(),
-}))
-
-beforeAll(async () => {
-    await connectToDB();
-  });
-  
-
-afterEach(async () => {
-  await User.deleteMany()
-})
-
-afterAll(async () => {
-  await disconnectFromDB();
-  await new Promise(resolve => setTimeout(resolve, 500));
+beforeEach(async () => {
+  await setupDatabase();
 });
 
-test('Should signup a new user', async () => {
+test('Should return profile for authenticated user', async () => {
   const response = await request(app)
-    .post('/users')
-    .send({
-      name: 'Test User',
-      email: 'test1@example.com',
-      password: 'MyPass777!'
-    })
-    .expect(201)
+    .get('/users/me')
+    .set('Authorization', `Bearer ${testUser.tokens[0].token}`)
+    .send()
+    .expect(200);
 
-  // Check if user is saved to DB
-  const user = await User.findById(response.body.user._id)
-  expect(user).not.toBeNull()
-
-  // Check response contains user and token
-  expect(response.body).toMatchObject({
-    user: {
-      name: 'Test User',
-      email: 'test1@example.com'
-    },
-    token: user.tokens[0].token
-  })
-
-  // Ensure password is hashed
-  expect(user.password).not.toBe('MyPass777!')
-})
+  expect(response.body.email).toBe(testUser.email);
+});

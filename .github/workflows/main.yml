@@ -13,12 +13,16 @@ jobs:
         image: mongo
         ports:
           - 27017:27017
-
-    env:
-      MONGODB_URL: mongodb://localhost:27017/task-manager-api
-      JWT_SECRET: thisismysecret
-      SENDGRID_API_KEY: SG.TEST
-      EMAIL_ACCOUNT: test@test.com
+        options: >-
+          --health-cmd "mongo --eval 'db.runCommand({ ping: 1 })'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        env:
+          MONGODB_URL: mongodb://localhost:27017/task-manager-api
+          JWT_SECRET: thisismysecret
+          SENDGRID_API_KEY: SG.TEST
+          EMAIL_ACCOUNT: test@test.com
 
     steps:
       - name: Checkout code
@@ -33,7 +37,10 @@ jobs:
         run: npm install
 
       - name: Run unit tests
-        run: JWT_SECRET=thisismysecret npm test
+        env:
+          MONGODB_URL: mongodb://localhost:27017/task-manager-api
+          JWT_SECRET: thisismysecret
+        run: npm test
   
   build-and-push:
     runs-on: ubuntu-latest
