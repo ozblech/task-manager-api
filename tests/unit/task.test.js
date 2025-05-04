@@ -44,17 +44,16 @@ beforeEach(async () => {
   await User.deleteMany();
   await Task.deleteMany();
 
-  // Create and save main user with token
-  user = await new User(testUser).save();
+  // Create and save main user
+  user = new User(testUser);
   token = await user.generateAuthToken();
-  await user.save();
+  await user.save(); // ✅ Ensure user with token is saved in DB
 
-  // Create and save other user with token
-  other_user = await new User(otherUser).save();
+  // Create and save other user
+  other_user = new User(otherUser);
   other_token = await other_user.generateAuthToken();
-  await other_user.save();
+  await other_user.save(); // ✅ Same here
 
-  // Create test task owned by main user
   await new Task({ ...testTask, owner: user._id }).save();
 });
 
