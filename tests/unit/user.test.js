@@ -41,7 +41,7 @@ test('Should signup a new user', async () => {
   expect(response.body).toMatchObject({
     user: {
       name: 'Test User',
-      email: 'test@example.com'
+      email: 'test1@example.com'
     },
     token: user.tokens[0].token
   })
