@@ -124,3 +124,51 @@
 // });
 
 
+const request = require('supertest');
+const app = require('../../src/index');
+const User = require('../../src/models/user');
+const Task = require('../../src/models/task');
+const { connectToDB, disconnectFromDB } = require('../../src/db/mongoose');
+
+let token;
+let testUser;
+
+beforeAll(async () => {
+  await connectToDB();
+
+  testUser = new User({
+    name: 'Task Tester',
+    email: 'tasktester@example.com',
+    password: 'MyPass777!'
+  });
+
+  token = await testUser.generateAuthToken();
+  await testUser.save();
+});
+
+afterEach(async () => {
+  await Task.deleteMany();
+});
+
+afterAll(async () => {
+  await User.deleteMany();
+  await disconnectFromDB();
+});
+
+test('Should create a task for authenticated user', async () => {
+  const response = await request(app)
+    .post('/tasks')
+    .set('Authorization', `Bearer ${token}`)
+    .send({
+      description: 'Test task'
+    })
+    .expect(201);
+
+  // Check DB entry
+  const task = await Task.findById(response.body._id);
+  expect(task).not.toBeNull();
+  expect(task.description).toBe('Test task');
+  expect(task.owner.toString()).toBe(testUser._id.toString());
+});
+
+
