@@ -1,129 +1,3 @@
-// // Set this BEFORE importing any code that uses JWT
-// process.env.JWT_SECRET = 'thisismysecret';
-
-// const jwt = require('jsonwebtoken')
-// const request = require('supertest');
-// const mongoose = require('mongoose');
-// const app = require('../../src/index');
-// const Task = require('../../src/models/task');
-// const User = require('../../src/models/user');
-
-// const testUserId = new mongoose.Types.ObjectId();
-// const testUser = {
-//   _id: testUserId,
-//   name: 'Task Tester',
-//   email: 'tasktester@example.com',
-//   password: 'MyPass123',
-// };
-
-// const otherUserId = new mongoose.Types.ObjectId();
-// const otherUser = {
-//   _id: otherUserId,
-//   name: 'Other',
-//   email: 'other@example.com',
-//   password: 'pass123123',
-// };
-
-// const testTask = {
-//   _id: new mongoose.Types.ObjectId(),
-//   description: 'Test task',
-//   completed: false,
-//   owner: testUserId
-// };
-
-// let user;
-// let other_user;
-// let token;
-// let other_token;
-
-// beforeAll(async () => {
-//   const dbUrl = process.env.MONGODB_URL || 'mongodb://localhost:27017/test';
-//   await mongoose.connect(dbUrl);
-// });
-
-// beforeEach(async () => {
-//   await User.deleteMany();
-//   await Task.deleteMany();
-
-//   user = new User(testUser);
-//   token = await user.generateAuthToken(); // This should internally save the user
-//   user = await User.findById(user._id); // Re-fetch user from DB to confirm it's there
-
-//   if (!user || user.tokens.length === 0) {
-//     throw new Error('User not saved properly or token missing');
-//   }
-
-//   other_user = new User(otherUser);
-//   other_token = await other_user.generateAuthToken();
-//   await other_user.save();
-
-//   await new Task({ ...testTask, owner: user._id }).save();
-// });
-
-// afterAll(async () => {
-//   await mongoose.disconnect();
-// });
-
-// test('Should create task for user', async () => {
-//   const users = await User.find({});
-//   console.log('Users in DB:');
-//   console.log(JSON.stringify(users, null, 2));
-//   console.log('User should be created');
-//   console.log('User:', user);
-//   console.log('User token:', user.tokens[0].token);
-//   console.log('User token:', token);
-//   const response = await request(app)
-//     .post('/tasks')
-//     .set('Authorization', `Bearer ${token}`)
-//     .send({
-//       description: 'New test task'
-//     })
-//     .expect(201);
-
-//   const task = await Task.findById(response.body._id);
-//   expect(task).not.toBeNull();
-//   expect(task.completed).toBe(false);
-// });
-
-// test('Auth test', async () => {
-//   const freshUser = await User.findById(user._id);
-//   console.log('Fetched user:', freshUser);
-//   console.log('Stored token:', freshUser.tokens[0].token);
-
-//   const decoded = jwt.verify(token, process.env.JWT_SECRET);
-//   console.log('Decoded:', decoded);
-
-//   expect(decoded._id).toBe(user._id.toString());
-
-//   const response = await request(app)
-//     .get('/tasks') // or any protected route
-//     .set('Authorization', `Bearer ${token}`)
-//     .expect(200);
-// });
-
-// test('Should fetch user tasks', async () => {
-//   const response = await request(app)
-//     .get('/tasks')
-//     .set('Authorization', `Bearer ${token}`)
-//     .send()
-//     .expect(200);
-
-//   expect(response.body.length).toBe(1);
-//   expect(response.body[0]._id).toBe(testTask._id.toHexString());
-// });
-
-// test('Should not delete task of other users', async () => {
-//   await request(app)
-//     .delete(`/tasks/${testTask._id}`)
-//     .set('Authorization', `Bearer ${other_token}`)
-//     .send()
-//     .expect(404);
-
-//   const task = await Task.findById(testTask._id);
-//   expect(task).not.toBeNull();
-// });
-
-
 const request = require('supertest');
 const app = require('../../src/index');
 const User = require('../../src/models/user');
@@ -132,6 +6,8 @@ const { connectToDB, disconnectFromDB } = require('../../src/db/mongoose');
 
 let token;
 let testUser;
+let otherUser;
+let otherUserToken;
 
 beforeAll(async () => {
   await connectToDB();
@@ -144,7 +20,18 @@ beforeAll(async () => {
 
   token = await testUser.generateAuthToken();
   await testUser.save();
+
+  // Create other test users
+  otherUser = new User({
+    name: 'Other User',
+    email: 'otherUser@example.com',
+    password: 'MyPass7772'
+  });
+  
+  otherUserToken = await otherUser.generateAuthToken();
+  await otherUser.save();
 });
+
 
 afterEach(async () => {
   await Task.deleteMany();
@@ -171,4 +58,30 @@ test('Should create a task for authenticated user', async () => {
   expect(task.owner.toString()).toBe(testUser._id.toString());
 });
 
+test('Should fetch user tasks', async () => {
+  await Task.create([
+    { description: 'Task 1', owner: testUser._id },
+    { description: 'Task 2', owner: testUser._id }
+  ]);
 
+  const response = await request(app)
+    .get('/tasks')
+    .set('Authorization', `Bearer ${token}`)
+    .expect(200);
+
+  expect(response.body.length).toBe(2);
+});
+
+test('Should not fetch user tasks from another user', async () => {
+  await Task.create({
+    description: 'Task from another user',
+    owner: otherUser._id
+  });
+
+  const response = await request(app)
+    .get('/tasks')
+    .set('Authorization', `Bearer ${token}`)
+    .expect(200);
+
+  expect(response.body.length).toBe(0);
+});
