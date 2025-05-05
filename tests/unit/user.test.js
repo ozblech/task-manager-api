@@ -2,6 +2,15 @@ const request = require('supertest');
 const app = require('../../src/index');
 const User = require('../../src/models/user');
 const { testUser, setupDatabase } = require('./setup');
+const { connectToDB, disconnectFromDB } = require('../../src/db/mongoose');
+
+beforeAll(async () => {
+  await connectToDB();
+});
+
+afterAll(async () => {
+  await disconnectFromDB();
+});
 
 beforeEach(async () => {
   await setupDatabase();
