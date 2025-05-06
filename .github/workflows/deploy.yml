@@ -50,7 +50,10 @@ jobs:
               password: "${{ secrets.MONGO_PASSWORD }}"
               database: "${{ secrets.MONGO_DATABASE }}"
           EOF
-
+      - name: Build Helm dependencies
+        run: |
+          helm dependency build ./my-app
+          
       - name: Deploy with Helm
         run: |
           helm upgrade --install task-manager ./my-app \
