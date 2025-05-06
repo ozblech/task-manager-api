@@ -43,11 +43,15 @@ app.use(taskRouter)
 let server;
 
 if (require.main === module) {
-  connectToDB().then(() => {
-    const port = process.env.PORT || 3000;
+  connectToDB()
+  .then(() => {
     server = app.listen(port, () => {
       console.log('Server is up on port ' + port);
     });
+  })
+  .catch((err) => {
+    console.error('Failed to connect to MongoDB:', err);
+    process.exit(1); // Fail fast
   });
 }
 

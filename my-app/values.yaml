@@ -23,6 +23,16 @@ ingress:
 service:
   port: 80
 
+mongodb:
+  architecture: standalone
+  persistence:
+    enabled: false
+  auth:
+    rootUser: root
+    rootPassword: rootpassword
+    username: appuser
+    password: appuserpass
+    database: myappdb
 
 
   
