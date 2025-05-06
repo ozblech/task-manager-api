@@ -50,10 +50,15 @@ jobs:
               password: "${{ secrets.MONGO_PASSWORD }}"
               database: "${{ secrets.MONGO_DATABASE }}"
           EOF
+      - name: Add Bitnami repo
+        run: |
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm repo update
+          
       - name: Build Helm dependencies
         run: |
           helm dependency build ./my-app
-          
+
       - name: Deploy with Helm
         run: |
           helm upgrade --install task-manager ./my-app \
