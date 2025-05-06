@@ -9,6 +9,8 @@ Update DNS or /etc/hosts
 3.122.45.67 task.local
 Find the ip address of the ingress controller:
 nslookup <a5d00a04e268e438287d9a9aa4381824-1610367987.us-west-2.elb.amazonaws.com> #CHANGE TO REAL ADDRESS
+or
+dig +short a6a133812d74d4edca428a5ef47c56c1-953585719.us-west-2.elb.amazonaws.com
 In front-app:
 const API_BASE_URL = '/api';
 
