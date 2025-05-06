@@ -54,7 +54,21 @@ jobs:
         run: |
           helm repo add bitnami https://charts.bitnami.com/bitnami
           helm repo update
-          
+
+          - name: Add ingress-nginx Helm repo
+          run: |
+            helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+            helm repo update
+  
+      - name: Install NGINX Ingress Controller (if not already installed)
+        run: |
+          if ! kubectl get deployment ingress-nginx-controller -n ingress-nginx >/dev/null 2>&1; then
+            helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx \
+              --namespace ingress-nginx --create-namespace \
+              --set controller.publishService.enabled=true
+          else
+            echo "Ingress NGINX controller already installed."
+          fi
       - name: Build Helm dependencies
         run: |
           helm dependency build ./my-app
