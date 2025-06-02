@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Checkout backend repo
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Required to get full history and tags
 
       - name: Get backend image tag from Git
         id: backend_tag
@@ -40,6 +42,7 @@ jobs:
         with:
           repository: ozblech/task-app-front
           path: frontend
+          fetch-depth: 0  # Required to get full history and tags
 
       - name: Get frontend image tag from Git
         id: frontend_tag
@@ -48,8 +51,9 @@ jobs:
           git fetch --tags
           FRONTEND_TAG=$(git describe --tags `git rev-list --tags --max-count=1` || echo "v0.1.0")
           SHORT_SHA=$(git rev-parse --short HEAD)
-          echo "FRONTEND_TAG=$FRONTEND_TAG" >> $GITHUB_ENV
-          echo "FRONTEND_IMAGE_TAG=${FRONTEND_TAG#v}-${SHORT_SHA}" >> $GITHUB_ENV
+          CLEAN_TAG="${FRONTEND_TAG#v}"  # Remove leading "v"
+          echo "FRONTEND_TAG=$CLEAN_TAG" >> $GITHUB_ENV
+          echo "FRONTEND_IMAGE_TAG=${FRONTEND_TAG}-${SHORT_SHA}" >> $GITHUB_ENV
           echo "Found frontend tag: $FRONTEND_IMAGE_TAG"
 
       - name: Configure AWS credentials
