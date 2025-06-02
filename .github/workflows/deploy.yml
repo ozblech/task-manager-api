@@ -26,7 +26,9 @@ jobs:
           git fetch --tags
           BACKEND_TAG=$(git describe --tags `git rev-list --tags --max-count=1` || echo "v0.1.0")
           SHORT_SHA=$(git rev-parse --short HEAD)
+          echo "Created SHORT_SHA: $SHORT_SHA"
           echo "BACKEND_TAG=$BACKEND_TAG" >> $GITHUB_ENV
+          echo "Found backend tag: $BACKEND_TAG"
           echo "BACKEND_IMAGE_TAG=${BACKEND_TAG#v}-${SHORT_SHA}" >> $GITHUB_ENV
           echo "Found backend tag: $BACKEND_IMAGE_TAG"
 
