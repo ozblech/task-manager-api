@@ -55,8 +55,8 @@ jobs:
           echo "Found SHORT_SHA: $SHORT_SHA"
           CLEAN_TAG="${FRONTEND_TAG#v}"  # Remove leading "v"
           echo "Created CLEAN_TAG: $CLEAN_TAG"
-          echo "FRONTEND_TAG=$CLEAN_TAG" >> $GITHUB_ENV
-          echo "FRONTEND_IMAGE_TAG=${FRONTEND_TAG}-${SHORT_SHA}" >> $GITHUB_ENV
+          FRONTEND_IMAGE_TAG="${CLEAN_TAG}-${SHORT_SHA}"
+          echo "FRONTEND_IMAGE_TAG=${FRONTEND_IMAGE_TAG}" >> $GITHUB_ENV
           echo "Found frontend tag: $FRONTEND_IMAGE_TAG"
 
       - name: Configure AWS credentials
