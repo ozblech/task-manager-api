@@ -17,8 +17,31 @@ jobs:
       EKS_CLUSTER_NAME: ${{ secrets.EKS_CLUSTER_NAME }}
 
     steps:
-      - name: Checkout code
+      - name: Checkout backend repo
         uses: actions/checkout@v3
+
+      - name: Get backend image tag from Git
+        id: backend_tag
+        run: |
+          git fetch --tags
+          BACKEND_TAG=$(git describe --tags `git rev-list --tags --max-count=1` || echo "v0.1.0")
+          echo "BACKEND_TAG=$BACKEND_TAG" >> $GITHUB_ENV
+          echo "Found backend tag: $BACKEND_TAG"
+
+      - name: Clone frontend repo
+        uses: actions/checkout@v3
+        with:
+          repository: ozblech/task-app-front
+          path: frontend
+
+      - name: Get frontend image tag from Git
+        id: frontend_tag
+        run: |
+          cd frontend
+          git fetch --tags
+          FRONTEND_TAG=$(git describe --tags `git rev-list --tags --max-count=1` || echo "v0.1.0")
+          echo "FRONTEND_TAG=$FRONTEND_TAG" >> $GITHUB_ENV
+          echo "Found frontend tag: $FRONTEND_TAG"
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
