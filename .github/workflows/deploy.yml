@@ -25,8 +25,10 @@ jobs:
         run: |
           git fetch --tags
           BACKEND_TAG=$(git describe --tags `git rev-list --tags --max-count=1` || echo "v0.1.0")
+          SHORT_SHA=$(git rev-parse --short HEAD)
           echo "BACKEND_TAG=$BACKEND_TAG" >> $GITHUB_ENV
-          echo "Found backend tag: $BACKEND_TAG"
+          echo "BACKEND_IMAGE_TAG=${BACKEND_TAG#v}-${SHORT_SHA}" >> $GITHUB_ENV
+          echo "Found backend tag: $BACKEND_IMAGE_TAG"
 
       - name: Clone frontend repo
         uses: actions/checkout@v3
@@ -40,8 +42,10 @@ jobs:
           cd frontend
           git fetch --tags
           FRONTEND_TAG=$(git describe --tags `git rev-list --tags --max-count=1` || echo "v0.1.0")
+          SHORT_SHA=$(git rev-parse --short HEAD)
           echo "FRONTEND_TAG=$FRONTEND_TAG" >> $GITHUB_ENV
-          echo "Found frontend tag: $FRONTEND_TAG"
+          echo "FRONTEND_IMAGE_TAG=${FRONTEND_TAG#v}-${SHORT_SHA}" >> $GITHUB_ENV
+          echo "Found frontend tag: $FRONTEND_IMAGE_TAG"
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -102,3 +106,5 @@ jobs:
             --namespace dev --create-namespace \
             -f ./my-app/values.yaml \
             -f ./my-app/values-secret.yaml
+            - set backend.image.tag=${BACKEND_IMAGE_TAG} \
+            - set frontend.image.tag=${FRONTEND_IMAGE_TAG} \
