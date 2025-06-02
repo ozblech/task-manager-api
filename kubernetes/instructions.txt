@@ -14,16 +14,16 @@ dig +short a6a133812d74d4edca428a5ef47c56c1-953585719.us-west-2.elb.amazonaws.co
 In front-app:
 const API_BASE_URL = '/api';
 
-# if terraform destroy can't delete subnets and internet gateway - check if loadbalancer exists
+# if terraform destroy can't delete subnets and internet gateway - check if loadbalancer exists<
 
 In order to work on minikube
 Install nginx controller
 get the url
 minikube service ingress-nginx-controller -n ingress-nginx --url
 edit /etc/hosts file to point to that ip 
-192.168.49.2 task.local
-then go to http://task.local:PORT_NUMBER
-http://task.local:31715
+192.168.49.2 minikube.taskapp.local
+then go to http://minikube.taskapp.local:PORT_NUMBER
+http://minikube.taskapp.local:31715
 
 For running using helm chart:
 helm install my-app ./my-app -f ./my-app/values.yaml -f ./my-app/values-secret.yaml

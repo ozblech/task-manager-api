@@ -79,7 +79,7 @@ jobs:
       #       --namespace dev --create-namespace \
       #       -f ./my-app/values.yaml \
       #       -f ./my-app/values-secret.yaml \
-      #       --set image.tag=${{ env.IMAGE_TAG }}
+      #       --set backend.image.tag=${{ env.IMAGE_TAG }}
 
       - name: Push new Git tag
         run: |

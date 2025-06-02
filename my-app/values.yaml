@@ -18,7 +18,7 @@ frontend:
 
 ingress:
   enabled: true
-  host: task.local
+  host: minikube.taskapp.local
 
 service:
   port: 80
