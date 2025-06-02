@@ -14,6 +14,8 @@ dig +short a6a133812d74d4edca428a5ef47c56c1-953585719.us-west-2.elb.amazonaws.co
 In front-app:
 const API_BASE_URL = '/api';
 
+# if terraform destroy can't delete subnets and internet gateway - check if loadbalancer exists
+
 In order to work on minikube
 Install nginx controller
 get the url
