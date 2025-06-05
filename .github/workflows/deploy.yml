@@ -22,20 +22,9 @@ jobs:
         with:
           fetch-depth: 0  # Required to get full history and tags
 
-      - name: Get backend image tag from Git
-        id: backend_tag
-        run: |
-          git fetch --tags
-          BACKEND_TAG=$(git describe --tags `git rev-list --tags --max-count=1` || echo "v1.0.0")
-          SHORT_SHA=$(git rev-parse --short HEAD)
-          echo "Created SHORT_SHA: $SHORT_SHA"
-          CLEAN_TAG="${BACKEND_TAG#v}"  # Remove leading "v"
-          BACKEND_IMAGE_TAG="${CLEAN_TAG}-${SHORT_SHA}"
-          
-          echo "BACKEND_TAG=$BACKEND_TAG" >> $GITHUB_ENV
-          echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_ENV
-          echo "BACKEND_IMAGE_TAG=$BACKEND_IMAGE_TAG" >> $GITHUB_ENV
-          echo "Final backend image tag: $BACKEND_IMAGE_TAG"
+      - name: Extract backend image tag
+        id: backend
+        uses: ./.github/actions/extract-image-tag
 
       - name: Clone frontend repo
         uses: actions/checkout@v3
@@ -44,20 +33,11 @@ jobs:
           path: frontend
           fetch-depth: 0  # Required to get full history and tags
 
-      - name: Get frontend image tag from Git
-        id: frontend_tag
-        run: |
-          cd frontend
-          git fetch --tags
-          FRONTEND_TAG=$(git describe --tags `git rev-list --tags --max-count=1` || echo "v1.0.0")
-          echo "Found frontend tag: $FRONTEND_TAG"
-          SHORT_SHA=$(git rev-parse --short HEAD)
-          echo "Found SHORT_SHA: $SHORT_SHA"
-          CLEAN_TAG="${FRONTEND_TAG#v}"  # Remove leading "v"
-          echo "Created CLEAN_TAG: $CLEAN_TAG"
-          FRONTEND_IMAGE_TAG="${CLEAN_TAG}-${SHORT_SHA}"
-          echo "FRONTEND_IMAGE_TAG=${FRONTEND_IMAGE_TAG}" >> $GITHUB_ENV
-          echo "Found frontend tag: $FRONTEND_IMAGE_TAG"
+      - name: Extract frontend image tag
+        id: frontend
+        uses: ./.github/actions/extract-image-tag
+        with:
+          working-directory: frontend
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -118,5 +98,5 @@ jobs:
             --namespace dev --create-namespace \
             -f ./my-app/values.yaml \
             -f ./my-app/values-secret.yaml
-            - set backend.image.tag=${BACKEND_IMAGE_TAG} \
-            - set frontend.image.tag=${FRONTEND_IMAGE_TAG} \
+            - set backend.image.tag=${{ steps.backend.outputs.image_tag }} \
+            - set frontend.image.tag=${{ steps.frontend.outputs.image_tag }} \

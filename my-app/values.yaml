@@ -26,7 +26,13 @@ service:
 mongodb:
   architecture: standalone
   persistence:
-    enabled: false
+    enabled: true
+    size: 2Gi
+    accessModes:
+      - ReadWriteOnce
+    storageClass: ""  # Leave empty to use the default storage class (like in Minikube)
+    annotations:
+      "helm.sh/resource-policy": keep
   auth:
     rootUser: root
     rootPassword: rootpassword

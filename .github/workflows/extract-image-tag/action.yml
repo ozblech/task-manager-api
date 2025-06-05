@@ -1,0 +1,26 @@
+name: Extract Image Tag
+description: "Generates Docker image tag from latest Git tag and short SHA"
+inputs:
+  working-directory:
+    description: "Directory to run Git commands in"
+    required: false
+    default: .
+
+outputs:
+  image_tag:
+    description: "Generated image tag (e.g., 1.0.0-a1b2c3d)"
+    value: ${{ steps.extract.outputs.image_tag }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Extract Git tag and SHA
+      id: extract
+      shell: bash
+      run: |
+        cd "${{ inputs.working-directory }}"
+        git fetch --tags
+        TAG=$(git describe --tags $(git rev-list --tags --max-count=1) 2>/dev/null || echo "v1.0.0")
+        SHORT_SHA=$(git rev-parse --short HEAD)
+        CLEAN_TAG="${TAG#v}"
+        echo "image_tag=${CLEAN_TAG}-${SHORT_SHA}" >> $GITHUB_OUTPUT
