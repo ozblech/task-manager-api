@@ -54,7 +54,7 @@ jobs:
       - name: Extract latest version + short SHA
         id: versioning
         run: |
-          LATEST_TAG=$(git describe --tags --abbrev=0 || echo "v1.0.0")
+          LATEST_TAG=$(git tag --sort=-v:refname | head -n 1 || echo "v1.0.0")
           VERSION_NUMBER=${LATEST_TAG#v}
           IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION_NUMBER"
           NEW_VERSION="v$MAJOR.$MINOR.$((PATCH + 1))"
@@ -83,4 +83,3 @@ jobs:
             git tag "$TAG"
             git push origin "$TAG"
             fi
-            
