@@ -24,7 +24,7 @@ jobs:
 
       - name: Extract backend image tag
         id: backend
-        uses: ./.github/workflows/extract-image-tag
+        uses: ./.github/actions/extract-image-tag
 
       - name: Clone frontend repo
         uses: actions/checkout@v3
@@ -35,7 +35,7 @@ jobs:
 
       - name: Extract frontend image tag
         id: frontend
-        uses: ./.github/workflows/extract-image-tag
+        uses: ./.github/actions/extract-image-tag
         with:
           working-directory: frontend
 
