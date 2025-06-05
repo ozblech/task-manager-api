@@ -52,21 +52,23 @@ jobs:
           fetch-depth: 0  # Required to get full history and tags
 
       - name: Extract latest version + short SHA
-        id: versioning
+        id: backend
+        uses: ./.github/actions/extract-image-tag
+
+      - name: Echo image tag
         run: |
-          LATEST_TAG=$(git tag --sort=-v:refname | head -n 1 || echo "v1.0.0")
-          VERSION_NUMBER=${LATEST_TAG#v}
-          IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION_NUMBER"
-          NEW_VERSION="v$MAJOR.$MINOR.$((PATCH + 1))"
-          SHORT_SHA=$(git rev-parse --short HEAD)
-          IMAGE_TAG="${NEW_VERSION#v}-${SHORT_SHA}"
-          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
-          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
-          echo "Image tag: $IMAGE_TAG"
-          echo "New version: $NEW_VERSION"
+            echo "Image tag: ${{ steps.backend.outputs.image_tag }}"
+        
+      - name: Increase version
+        id: increase_version
+        run: |
+            IFS='.' read -r MAJOR MINOR PATCH <<< ${{ steps.backend.outputs.image_tag }}
+            NEW_VERSION="v$MAJOR.$MINOR.$((PATCH + 1))"
+            echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
+  
       - name: Build and push Docker image
         run: |
           docker build -t "${{ secrets.DOCKER_USERNAME }}/task-manager-api:${IMAGE_TAG}" .
