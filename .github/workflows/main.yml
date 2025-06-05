@@ -71,9 +71,15 @@ jobs:
         run: |
           docker build -t "${{ secrets.DOCKER_USERNAME }}/task-manager-api:${IMAGE_TAG}" .
           docker push "${{ secrets.DOCKER_USERNAME }}/task-manager-api:${IMAGE_TAG}"
-      - name: Push new Git tag
+      - name: Push new Git tag (if it doesn't already exist)
         run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git tag "${{ env.NEW_VERSION }}"
-          git push origin "${{ env.NEW_VERSION }}"
+            git config user.name "github-actions"
+            git config user.email "github-actions@github.com"
+
+            TAG="${{ env.NEW_VERSION }}"
+            if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists. Skipping tag creation."
+            else
+            git tag "$TAG"
+            git push origin "$TAG"
+            fi
