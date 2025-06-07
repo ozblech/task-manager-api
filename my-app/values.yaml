@@ -31,6 +31,7 @@ mongodb:
     accessModes:
       - ReadWriteOnce
     storageClass: ""  # Leave empty to use the default storage class (like in Minikube)
+    # storageClass: gp3  # or gp2, depending on your cluster (AWS)
     annotations:
       "helm.sh/resource-policy": keep
   auth:

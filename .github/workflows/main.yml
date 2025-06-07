@@ -1,4 +1,4 @@
-name: Deploy Backend
+name: Build & Deploy After Merge
 
 on:
   push:

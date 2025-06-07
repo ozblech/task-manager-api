@@ -100,5 +100,5 @@ jobs:
             --namespace dev --create-namespace \
             -f ./my-app/values.yaml \
             -f ./my-app/values-secret.yaml
-            - set backend.image.tag=${{ steps.backend.outputs.current_image_tag }} \
-            - set frontend.image.tag=${{ steps.frontend.outputs.current_image_tag }} \
+            -- set backend.image.tag=${{ steps.backend.outputs.current_image_tag }} \
+            -- set frontend.image.tag=${{ steps.frontend.outputs.current_image_tag }}
