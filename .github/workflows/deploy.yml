@@ -2,7 +2,7 @@ name: Deploy to EKS
 
 on:
   workflow_run:
-    workflows: ["Deploy Backend"]
+    workflows: ["Build & Deploy After Merge"]
     types:
       - completed
 
