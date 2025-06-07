@@ -9,6 +9,18 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+
+    services:
+      mongo:
+        image: mongo
+        ports:
+          - 27017:27017
+    env:
+      MONGODB_URL: mongodb://localhost:27017/task-manager-api
+      JWT_SECRET: thisismysecret
+      SENDGRID_API_KEY: SG.TEST
+      EMAIL_ACCOUNT: test@test.com
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -16,10 +28,13 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '20'
 
       - name: Install dependencies
         run: npm install
 
       - name: Run unit tests
+        env:
+          MONGODB_URL: mongodb://localhost:27017/task-manager-api
+          JWT_SECRET: thisismysecret
         run: npm test
