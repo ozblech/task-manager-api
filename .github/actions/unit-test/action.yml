@@ -15,8 +15,8 @@ runs:
 
     - name: Run unit tests
       env:
-        MONGODB_URL: mongodb://localhost:27017/task-manager-api
-        JWT_SECRET: thisismysecret
+        MONGODB_URL: ${{ env.MONGODB_URL }}
+        JWT_SECRET: ${{ env.JWT_SECRET }}
       run: npm test
       shell: bash
   
