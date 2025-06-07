@@ -55,13 +55,10 @@ jobs:
         id: backend
         uses: ./.github/actions/extract-image-tag
 
-      - name: Echo image tag
-        run: |
-            echo "Image tag: ${{ steps.backend.outputs.image_tag }}"
-        
       - name: Increase version
         id: increase_version
         run: |
+            echo "Image tag: ${{ steps.backend.outputs.image_tag }}"
             IMAGE_TAG="${{ steps.backend.outputs.image_tag }}"
             VERSION_PART="${IMAGE_TAG%%-*}"  # Get part before the dash, e.g. 1.0.14
             echo "version is $VERSION_PART"
@@ -89,3 +86,4 @@ jobs:
             git tag "$TAG"
             git push origin "$TAG"
             fi
+            
