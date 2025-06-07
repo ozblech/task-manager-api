@@ -55,12 +55,13 @@ jobs:
         id: backend
         uses: ./.github/actions/extract-image-tag
 
-      - name: Increase version
-        id: increase_version
+      - name: Get new version from image tag
+        id: get-version
         run: |
             echo "Image tag: ${{ steps.backend.outputs.image_tag }}"
             IMAGE_TAG="${{ steps.backend.outputs.image_tag }}"
             VERSION="${IMAGE_TAG%%-*}"  # Get part before the dash, e.g. 1.0.14
+            echo "VERSION=$VERSION" >> $GITHUB_ENV
             echo "New version is $VERSION"
 
       - name: Log in to Docker Hub
