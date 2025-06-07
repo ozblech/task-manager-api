@@ -55,14 +55,14 @@ jobs:
         id: backend
         uses: ./.github/actions/extract-image-tag
 
-      - name: Get new version from image tag
-        id: get-version
-        run: |
-            echo "Image tag: ${{ steps.backend.outputs.image_tag }}"
-            IMAGE_TAG="${{ steps.backend.outputs.image_tag }}"
-            VERSION="${IMAGE_TAG%%-*}"  # Get part before the dash, e.g. 1.0.14
-            echo "VERSION=$VERSION" >> $GITHUB_ENV
-            echo "New version is $VERSION"
+      # - name: Get new version from image tag
+      #   id: get-version
+      #   run: |
+      #       echo "Image tag: ${{ steps.backend.outputs.image_tag }}"
+      #       IMAGE_TAG="${{ steps.backend.outputs.image_tag }}"
+      #       VERSION="${IMAGE_TAG%%-*}"  # Get part before the dash, e.g. 1.0.14
+      #       echo "VERSION=$VERSION" >> $GITHUB_ENV
+      #       echo "New version is $VERSION"
 
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
@@ -71,12 +71,13 @@ jobs:
         run: |
           docker build -t "${{ secrets.DOCKER_USERNAME }}/task-manager-api:${{ steps.backend.outputs.image_tag }}" .
           docker push "${{ secrets.DOCKER_USERNAME }}/task-manager-api:${{ steps.backend.outputs.image_tag }}"
+
       - name: Push new Git tag (if it doesn't already exist)
         run: |
             git config user.name "github-actions"
             git config user.email "github-actions@github.com"
 
-            TAG="${{ env.VERSION }}"
+            TAG="${{ steps.backend.outputs.new_version }}"
             if git rev-parse "$TAG" >/dev/null 2>&1; then
             echo "Tag $TAG already exists. Skipping tag creation."
             else

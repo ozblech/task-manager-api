@@ -8,8 +8,11 @@ inputs:
 
 outputs:
   image_tag:
-    description: "Generated image tag (e.g., 1.0.0-a1b2c3d)"
+    description: "Generated image tag (e.g., 1.0.14-a1b2c3d)"
     value: ${{ steps.extract.outputs.image_tag }}
+  new_version:
+    description: "Next version in X.Y.Z format (e.g., 1.0.15)"
+    value: ${{ steps.extract.outputs.new_version }}
 
 runs:
   using: "composite"
@@ -24,5 +27,6 @@ runs:
         SHORT_SHA=$(git rev-parse --short HEAD)
         CLEAN_TAG="${TAG#v}"
         IFS='.' read -r MAJOR MINOR PATCH <<< "$CLEAN_TAG"
-        NEW_VERSION="v$MAJOR.$MINOR.$((PATCH + 1))"
+        NEW_VERSION="$MAJOR.$MINOR.$((PATCH + 1))"
         echo "image_tag=${NEW_VERSION}-${SHORT_SHA}" >> $GITHUB_OUTPUT
+        echo "new_version=v${NEW_VERSION}" >> $GITHUB_OUTPUT
