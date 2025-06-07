@@ -60,12 +60,8 @@ jobs:
         run: |
             echo "Image tag: ${{ steps.backend.outputs.image_tag }}"
             IMAGE_TAG="${{ steps.backend.outputs.image_tag }}"
-            VERSION_PART="${IMAGE_TAG%%-*}"  # Get part before the dash, e.g. 1.0.14
-            echo "version is $VERSION_PART"
-            IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION_PART"
-            NEW_VERSION="v$MAJOR.$MINOR.$((PATCH + 1))"
-            echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
-            echo "New version: $NEW_VERSION"
+            VERSION="${IMAGE_TAG%%-*}"  # Get part before the dash, e.g. 1.0.14
+            echo "New version is $VERSION"
 
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
@@ -79,11 +75,11 @@ jobs:
             git config user.name "github-actions"
             git config user.email "github-actions@github.com"
 
-            TAG="${{ env.NEW_VERSION }}"
+            TAG="${{ env.VERSION }}"
             if git rev-parse "$TAG" >/dev/null 2>&1; then
             echo "Tag $TAG already exists. Skipping tag creation."
             else
             git tag "$TAG"
             git push origin "$TAG"
             fi
-            
+

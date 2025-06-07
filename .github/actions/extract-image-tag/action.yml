@@ -23,4 +23,6 @@ runs:
         TAG=$(git describe --tags $(git rev-list --tags --max-count=1) 2>/dev/null || echo "v1.0.0")
         SHORT_SHA=$(git rev-parse --short HEAD)
         CLEAN_TAG="${TAG#v}"
-        echo "image_tag=${CLEAN_TAG}-${SHORT_SHA}" >> $GITHUB_OUTPUT
+        IFS='.' read -r MAJOR MINOR PATCH <<< "$CLEAN_TAG"
+        NEW_VERSION="v$MAJOR.$MINOR.$((PATCH + 1))"
+        echo "image_tag=${NEW_VERSION}-${SHORT_SHA}" >> $GITHUB_OUTPUT
