@@ -41,8 +41,8 @@ jobs:
 
       - name: Echo image tags
         run: |
-          echo "Backend image tag: ${{ steps.backend.outputs.image_tag }}"
-          echo "Frontend image tag: ${{ steps.frontend.outputs.image_tag }}"
+          echo "Backend image tag: ${{ steps.backend.outputs.current_image_tag }}"
+          echo "Frontend image tag: ${{ steps.frontend.outputs.current_image_tag }}"
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -100,5 +100,5 @@ jobs:
             --namespace dev --create-namespace \
             -f ./my-app/values.yaml \
             -f ./my-app/values-secret.yaml
-            - set backend.image.tag=${{ steps.backend.outputs.image_tag }} \
-            - set frontend.image.tag=${{ steps.frontend.outputs.image_tag }} \
+            - set backend.image.tag=${{ steps.backend.outputs.current_image_tag }} \
+            - set frontend.image.tag=${{ steps.frontend.outputs.current_image_tag }} \
