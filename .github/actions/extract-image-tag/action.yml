@@ -9,7 +9,7 @@ inputs:
 outputs:
   new_image_tag:
     description: "Generated image tag (e.g., 1.0.14-a1b2c3d)"
-    value: ${{ steps.extract.outputs.image_tag }}
+    value: ${{ steps.extract.outputs.new_image_tag }}
   new_version:
     description: "Next version in X.Y.Z format (e.g., 1.0.15)"
     value: ${{ steps.extract.outputs.new_version }}
