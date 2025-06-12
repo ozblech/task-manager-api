@@ -15,6 +15,24 @@ router.get('/' , async (req, res) => {
     res.status(201).send('It is working')
 })
 
+// Simulated complex request with HTTP metrics
+router.get('/simulate-complex', async (req, res) => {
+  const { httpRequestDurationMicroseconds } = req.app.locals.metrics;
+  const end = httpRequestDurationMicroseconds.startTimer();
+  const route = '/simulate-complex';
+
+  try {
+    // Simulate a slow operation
+    await new Promise(resolve => setTimeout(resolve, Math.random() * 2000)); // 0-2 sec
+
+    res.status(200).send('Complex request completed');
+  } catch (e) {
+    res.status(500).send('Error');
+  } finally {
+    end({ route, method: req.method, status_code: res.statusCode });
+  }
+});
+
 
 //create user
 router.post('/users' , async (req, res) => {
@@ -22,6 +40,12 @@ router.post('/users' , async (req, res) => {
     try {
         await user.save()
         sendWelcomeEmail(user.email, user.name)
+
+        // Increment Prometheus metric
+        const { userCreationCounter } = req.app.locals.metrics;
+        userCreationCounter.inc();
+        
+
         const token = await user.generateAuthToken()
         res.status(201).json({ user, token })
     }
