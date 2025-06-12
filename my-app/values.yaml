@@ -2,7 +2,7 @@ backend:
   replicaCount: 1
   image:
     repository: ozblech/task-manager-api
-    tag: latest
+    tag: 1.0.26-d3768e2
     pullPolicy: Always
   service:
     port: 3000
